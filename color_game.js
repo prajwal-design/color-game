@@ -1,5 +1,7 @@
-
+//------------------------------------------------
 //Helper functions
+//------------------------------------------------
+
 const pickColor = ()=>{
     //get ramdom number between 0 and 5
     const random = Math.floor(Math.random() * 6)
@@ -26,19 +28,75 @@ const generateRandomColors=(num)=>{
     return output
 }
 
-colors = generateRandomColors(6)
+const changeColors = (color)=>{
+    squares.forEach((square)=>{
+         square.style.backgroundColor = color;
+    })
+}
+
+const reset = () =>{
+    colors = generateRandomColors(numSquares)
+    pickedColor = pickColor();
+    resetButton.textContent="New Colors"
+    colorDisplay.textContent = pickedColor
+    for(let i=0;i<squares.length;i++){
+        if(colors[i]){
+            squares[i].style.backgroundColor = colors[i]
+        }else{
+            squares[i].style.backgroundColor = "black"
+        }
+    }
+    title.style.backgroundColor = "steelblue"
+    messageDisplay.textContent = ""
+}
+
+
+//------------------------------------------------
+//init variables
+//------------------------------------------------
+
+//State
+let numSquares = 6;
 
 //select elements
 const squares = document.querySelectorAll(".square")
 const colorDisplay = document.getElementById("colorDisplay")
 const message = document.getElementById("message")
 const title  = document.querySelector("h1")
+const resetButton = document.getElementById("resetButton")
+// const eassyButton = document.getElementById("eassyButton")
+// const hardButton = document.getElementById("hardButton")
+const modeButton = document.querySelectorAll(".mode")
 
-//choose winning color
-const pickedColor= pickColor()
+let colors = generateRandomColors(numSquares)
+let pickedColor= pickColor()
 
 //update colorDisplay
 colorDisplay.textContent = pickedColor;
+
+//------------------------------------------------
+//Main code
+//------------------------------------------------
+
+//Reset Color Button
+resetButton.addEventListener("click",reset)
+
+//Mode Buttons
+modeButton.forEach((button)=>{
+    button.addEventListener("click",function(){
+        modeButton[0].classList.remove("selected")
+        modeButton[1].classList.remove("selected")
+        this.classList.add("selected")
+        if(this.textContent === "Easy"){
+            numSquares = 3;
+        }
+        else{
+            numSquares = 6;
+        }
+        reset()
+    })
+})
+
 
 //setup squares
 for(let i=0;i<squares.length;i++){
@@ -52,6 +110,7 @@ for(let i=0;i<squares.length;i++){
             message.textContent = "Correct! :-D";
             changeColors(pickedColor)
             title.style.backgroundColor = pickedColor
+            resetButton.textContent = "Play Again?"
         }else{
             this.style.backgroundColor = "black"
             message.textContent = "You suck"
@@ -59,8 +118,3 @@ for(let i=0;i<squares.length;i++){
     })
 } 
 
-const changeColors = (color)=>{
-    squares.forEach((square)=>{
-         square.style.backgroundColor = color;
-    })
-}
